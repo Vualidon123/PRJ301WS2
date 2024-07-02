@@ -5,7 +5,6 @@
  */
 package model;
 
-import java.math.BigDecimal;
 import java.sql.Date;
 
 /**
@@ -13,44 +12,46 @@ import java.sql.Date;
  * @author PC MSI
  */
 public class PaymentDTO {
-    private int PaymentID;
-    private Date PaymentDate;
-    private BigDecimal Amount;
-   private String PaymentMethod ;
+    private int paymentid;
+    private String paymentdate;
+    private float amount;
+   private String paymentmethod ;
 
     public PaymentDTO() {
     }
 
-    public int getPaymentID() {
-        return PaymentID;
+    public int getPaymentid() {
+        return paymentid;
     }
 
-    public void setPaymentID(int PaymentID) {
-        this.PaymentID = PaymentID;
+    public void setPaymentid(int paymentid) {
+        this.paymentid = paymentid;
     }
 
-    public Date getPaymentDate() {
-        return PaymentDate;
+    public String getPaymentdate() {
+        return paymentdate;
     }
 
-    public void setPaymentDate(Date PaymentDate) {
-        this.PaymentDate = PaymentDate;
+    public void setPaymentdate(String paymentdate) {
+        this.paymentdate = paymentdate;
     }
 
-    public BigDecimal getAmount() {
-        return Amount;
+    public float getAmount() {
+        return amount;
     }
 
-    public void setAmount(BigDecimal Amount) {
-        this.Amount = Amount;
+    public void setAmount(float amount) {
+        this.amount = amount;
     }
 
-    public String getPaymentMethod() {
-        return PaymentMethod;
+    public String getPaymentmethod() {
+        return paymentmethod;
     }
 
-    public void setPaymentMethod(String PaymentMethod) {
-        this.PaymentMethod = PaymentMethod;
+    public void setPaymentmethod(String paymentmethod) {
+        this.paymentmethod = paymentmethod;
     }
+
+
    
 }

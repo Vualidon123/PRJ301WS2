@@ -5,9 +5,8 @@
  */
 package model;
 
-import java.math.BigDecimal;
+
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -50,15 +49,15 @@ public class PaymentDAO {
                 while (rs.next()) {
 
                     int id = rs.getInt("PaymentID");
-                    Date date = rs.getDate("PaymentDate");
-                    BigDecimal amount = rs.getBigDecimal("Amount");
+                    String date = rs.getString("PaymentDate");
+                    float amount = rs.getFloat("Amount");
                     String method = rs.getString("PaymentMethod");
 
                     PaymentDTO payment = new PaymentDTO();
-                    payment.setPaymentID(id);
-                    payment.setPaymentDate(date);
+                    payment.setPaymentid(id);
+                    payment.setPaymentdate(date);
                     payment.setAmount(amount);
-                    payment.setPaymentMethod(method);
+                    payment.setPaymentmethod(method);
 
                     list.add(payment);
                 }
@@ -85,15 +84,15 @@ public class PaymentDAO {
             if (rs.next()) {
 
                     int id1 = rs.getInt("PaymentID");
-                    Date date = rs.getDate("PaymentDate");
-                    BigDecimal amount = rs.getBigDecimal("Amount");
+                    String date = rs.getString("PaymentDate");
+                    float amount = rs.getFloat("Amount");
                     String method = rs.getString("PaymentMethod");
 
                  PaymentDTO payment = new PaymentDTO();
-                    payment.setPaymentID(id1);
-                    payment.setPaymentDate(date);
+                    payment.setPaymentid(id1);
+                    payment.setPaymentdate(date);
                     payment.setAmount(amount);
-                    payment.setPaymentMethod(method);
+                    payment.setPaymentmethod(method);
                 return payment;
             }
         } catch (SQLException ex) {
@@ -102,40 +101,46 @@ public class PaymentDAO {
         }
         return null;
     }
-  public Integer insert(PaymentDTO student) {
-        String sql = "INSERT INTO student( id, firstname, lastname, age) "
+  public Integer insert(PaymentDTO payment) {
+        String sql = "INSERT INTO Payments( PaymentID, PaymentDate, Amount, PaymentMethod) "
                 + " VALUES (?, ?, ?, ?) ";
         try {
 
             Connection conn = DBUtils.getConnection();
             PreparedStatement ps = conn.prepareStatement(sql);
 
-            ps.setInt(1, student.getId());
-                      ps.setInt(4, student.getAge());
+            ps.setInt(1, payment.getPaymentid());
+            ps.setString(2, payment.getPaymentdate());
+            ps.setFloat(3, payment.getAmount());
+            ps.setString(4, payment.getPaymentmethod());
 
             ps.executeUpdate();
             conn.close();
-            return student.getId();
+            return payment.getPaymentid();
         } catch (SQLException ex) {
             System.out.println("Insert Student error!" + ex.getMessage());
             ex.printStackTrace();
         }
         return null;
-    }ps.setString(2, student.getFirstname());
-            ps.setString(3, student.getLastname());
-  
-   public boolean update(PaymentDTO student) {
-        String sql = " UPDATE student SET firstname = ? , lastname = ?, age = ? ";
-        sql += " WHERE id = ? ";
+    }
+
+    /*
+    Update student and return Id
+     */
+    public boolean update(PaymentDTO payment) {
+        String sql = " UPDATE Payments SET PaymentDate = ? , Amount = ?, PaymentMethod = ? ";
+        sql += " WHERE PaymentID = ? ";
         try {
             Connection cn = DBUtils.getConnection();
             PreparedStatement ps = cn.prepareStatement(sql);
-            ps.setInt(1, student.getId());
-            ps.setString(2, student.getFirstname());
-            ps.setString(3, student.getLastname());
-            ps.setInt(4, student.getAge());
+            
+  
+            ps.setString(1, payment.getPaymentdate());
+            ps.setFloat(2, payment.getAmount());
+            ps.setString(3, payment.getPaymentmethod());
+            ps.setInt(4, payment.getPaymentid());
 
-            ps.executeQuery();
+            ps.executeUpdate();
             cn.close();
         } catch (SQLException e) {
             System.err.println("Update student error:" + e.getMessage());
@@ -143,9 +148,13 @@ public class PaymentDAO {
         }
         return false;
     }
+
+    /*
+    Delete student 
+     */
     public boolean delete(Integer id) {
-        String sql = " DELETE student ";
-        sql += " WHERE id = ? ";
+        String sql = " DELETE Payments ";
+        sql += " WHERE PaymentID = ? ";
         try {
             Connection cn = DBUtils.getConnection();
             PreparedStatement ps = cn.prepareStatement(sql);
@@ -160,4 +169,5 @@ public class PaymentDAO {
         }
         return false;
     }
+
 }

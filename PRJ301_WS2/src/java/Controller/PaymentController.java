@@ -4,10 +4,15 @@
  * and open the template in the editor.
  */
 package Controller;
-
+import utils.DBUtils;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -33,14 +38,14 @@ public class PaymentController extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-    String action = request.getParameter("action");
+      String action = request.getParameter("action");
         String keyword = request.getParameter("keyword");
         if (keyword == null) {
             keyword = "";
         }
         String sortCol = request.getParameter("colSort");
 
-        PaymentDAO studentDAO = new PaymentDAO();
+        PaymentDAO paymentDAO = new PaymentDAO();
         HttpSession session = request.getSession(false);
         if (session != null && session.getAttribute("usersession") == null) {
             response.sendRedirect("login.jsp");
@@ -50,12 +55,142 @@ public class PaymentController extends HttpServlet {
 
             PaymentDAO dao = new PaymentDAO();
             List<PaymentDTO> list = dao.list(keyword, sortCol);
-            request.setAttribute("Paymentlist", list);
+            request.setAttribute("paymentlist", list);
+            request.getRequestDispatcher("/PaymentList.jsp").forward(request, response);
+
+        } else if (action.equals("details")) {
+
+            Integer id = null;
+            try {
+                id = Integer.parseInt(request.getParameter("id"));
+            } catch (NumberFormatException ex) {
+                log("Parameter id has wrong format.");
+            }
+
+           PaymentDTO payment = null;
+            if (id != null) {
+                payment = paymentDAO.load(id);
+            }
+
+            request.setAttribute("object", payment);
+            RequestDispatcher rd = request.getRequestDispatcher("Paymentdetails.jsp");
+            rd.forward(request, response);
+
+        } 
+        
+        else if (action.equals("edit")) {
+            Integer id = null;
+            try {
+                id = Integer.parseInt(request.getParameter("id"));
+            } catch (NumberFormatException e) {
+                log("Parameter id has wrong format");
+            }
+             PaymentDTO student = null;
+            if (id != null) {
+                student = paymentDAO.load(id);
+            }
+            request.setAttribute("nextaction", "update");
+            request.setAttribute("object", student);
+            RequestDispatcher rd = request.getRequestDispatcher("Paymentedit.jsp");
+            rd.forward(request, response);
+
+        } 
+        
+        else if (action.equals("create")) {
+            PaymentDTO student = new PaymentDTO();
+            request.setAttribute("object", student);
+            request.setAttribute("nextaction", "insert");
+            RequestDispatcher rd = request.getRequestDispatcher("Paymentedit.jsp");
+            rd.forward(request, response);
+
+        }
+        else if (action.equals("update")) {
+            Integer id = null;
+            try {
+                id = Integer.parseInt(request.getParameter("id"));
+            } catch (NumberFormatException e) {
+                log("Parameter id has wrong format");
+            }
+            String method = request.getParameter("paymentmethod");
+            String date = request.getParameter("paymentdate");
+            float amount = 0;
+            try {
+                amount = Float.parseFloat(request.getParameter("amount"));
+            } catch (NumberFormatException e) {
+                log("Parameter amount has wrong format");
+            }
+
+             PaymentDTO payment = null;
+            if (id != null) {
+                payment= paymentDAO.load(id);
+            }
+
+            payment.setPaymentdate(date);
+            payment.setPaymentmethod(method);
+            payment.setAmount(amount);
+            paymentDAO.update(payment);
+            request.setAttribute("object",payment);
+            request.setAttribute("nextaction", "update");
+            RequestDispatcher rd = request.getRequestDispatcher("Paymentdetails.jsp");
+            rd.forward(request, response);
+
+        }
+        else if (action.equals("insert")) {
+            Integer id = null;
+            try {
+                id = Integer.parseInt(request.getParameter("id"));
+            } catch (NumberFormatException e) {
+                log("Parameter id has wrong format");
+            }
+
+            String method = request.getParameter("paymentmethod");
+            String date = request.getParameter("paymentdate");
+            float amount = 0;
+            try {
+                amount = Float.parseFloat(request.getParameter("amount"));
+            } catch (NumberFormatException e) {
+                log("Parameter amount has wrong format");
+            }
+
+           PaymentDTO payment = new PaymentDTO();
+           
+            payment.setPaymentid(id);
+            payment.setPaymentdate(date);
+            payment.setPaymentmethod(method);
+            payment.setAmount(amount);
+            paymentDAO.update(payment);
+
+            paymentDAO.insert( payment);
+            request.setAttribute("object",  payment);
+            RequestDispatcher rd = request.getRequestDispatcher("Paymentdetails.jsp");
+            rd.forward(request, response);
+
+        }   
+         else if (action.equals("delete")) {
+            Integer id = null;
+            try {
+                id = Integer.parseInt(request.getParameter("id"));
+            } catch (NumberFormatException e) {
+                log("Parameter id has wrong format");
+            }
+            PaymentDTO student = null;
+            paymentDAO.delete(id);
+            List<PaymentDTO> list = paymentDAO.list(keyword, sortCol);
+            request.setAttribute("paymentlist", list);
             request.getRequestDispatcher("/PaymentList.jsp").forward(request, response);
 
         }
-    }
 
+        if (action == null || action.equals("") || action.equals("list")) {
+
+            PaymentDAO dao = new PaymentDAO();
+            List<PaymentDTO> list = dao.list(keyword, sortCol);
+            request.setAttribute("paymentlist", list);
+
+            request.getRequestDispatcher("/PaymentList.jsp").forward(request, response);
+        }
+    }
+    
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.

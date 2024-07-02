@@ -13,33 +13,52 @@
         <title>Payment List</title>
     </head>
     <body>
-        <h1>Hello World!</h1>
+         <%@ include file="/menu.jsp" %>
         <form action='' method=GET> 
             <input name=keyword type=text value="<%=request.getParameter("keyword") != null ? request.getParameter("keyword") : ""%>">
             <input type=submit value=Search >
         </form>
-              <table border="1">
-            <tr><td>PaymentID</td>
-                <td><a href=?colSort=PaymentDate>PaymentDate</a></td>
+              <table>
+            <tr><td>Payment ID</td>
+                <td><a href=?colSort=PaymentDate>Payment Date</a></td>
                 <td>Amount</td>
-                <td><a href=?colSort=PaymentMethod>PaymentMethod</a></td>
+                <td><a href=?colSort=PaymentMethod>Payment Method</a></td>
             </tr>
 
             <%
 
-                List<PaymentDTO> list = (List<PaymentDTO>) request.getAttribute("Paymentlist");
-                for (PaymentDTO student : list) {
+                List<PaymentDTO> list = (List<PaymentDTO>) request.getAttribute("paymentlist");
+                for (PaymentDTO payment : list) {
+                      pageContext.setAttribute("payment", payment);
             %>
 
 
-            <tr><td><%=student.getPaymentID()%> </td>
-                <td><%=student.getPaymentDate()%> </td>
-                <td><%=student.getAmount()%> </td>
-                <td><%= student.getPaymentMethod()%></td></tr>
+            <tr><td>
+                <a href="PaymentController?action=details&id=${payment.paymentid}">${payment.paymentid}</a></td>
+                <td>${payment.paymentdate} </td>
+                <td>${payment.amount} </td>
+                <td>${payment.paymentmethod}</td>
+                 <td>
+                    <form action="PaymentController" method="POST">
+                        <input name="action" value="delete" type="hidden">
+                        <input name="id" type="hidden" value=${payment.paymentid}>
+                        <input type="submit" value="Delete">
+                    </form>
+                </td>
+           
+            </tr>
+            
                 <%
                     }
                 %>
-
+             <tr>
+                <td>
+                    <form action="PaymentController" method="POST">
+                        <input name="action" value="create" type="hidden">
+                        <input type="submit" value="Create">
+                    </form>
+                </td>
+            </tr>
 
 
         </table> 

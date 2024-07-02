@@ -3,8 +3,15 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/PC%20MSI/Documents/NetBeansProjects/PRJ301_WS2/src/java/model/PaymentDAO.java</file>
-            <file>file:/C:/Users/PC%20MSI/Documents/NetBeansProjects/PRJ301_WS2/src/java/Controller/PaymentController.java</file>
+            <file>file:/C:/Users/Duy/Documents/PRJ301WS2/PRJ301_WS2/src/java/Controller/PaymentController.java</file>
+            <file>file:/C:/Users/Duy/Documents/PRJ301WS2/PRJ301_WS2/web/Paymentedit.jsp</file>
+            <file>file:/C:/Users/Duy/Documents/PRJ301WS2/PRJ301_WS2/web/PaymentList.jsp</file>
+            <file>file:/C:/Users/Duy/Documents/PRJ301WS2/PRJ301_WS2/web/login.jsp</file>
+            <file>file:/C:/Users/Duy/Documents/PRJ301WS2/PRJ301_WS2/src/java/Controller/LoginController.java</file>
+            <file>file:/C:/Users/Duy/Documents/PRJ301WS2/PRJ301_WS2/web/Paymentdetails.jsp</file>
+            <file>file:/C:/Users/Duy/Documents/PRJ301WS2/PRJ301_WS2/src/java/model/PaymentDAO.java</file>
+            <file>file:/C:/Users/Duy/Documents/PRJ301WS2/PRJ301_WS2/web/menu.jsp</file>
+            <file>file:/C:/Users/Duy/Documents/PRJ301WS2/PRJ301_WS2/src/java/model/PaymentDTO.java</file>
         </group>
     </open-files>
 </project-private>
