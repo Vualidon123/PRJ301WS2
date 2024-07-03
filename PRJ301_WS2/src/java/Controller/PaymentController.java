@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 package Controller;
+
 import utils.DBUtils;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -38,7 +39,7 @@ public class PaymentController extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-      String action = request.getParameter("action");
+        String action = request.getParameter("action");
         String keyword = request.getParameter("keyword");
         if (keyword == null) {
             keyword = "";
@@ -67,7 +68,7 @@ public class PaymentController extends HttpServlet {
                 log("Parameter id has wrong format.");
             }
 
-           PaymentDTO payment = null;
+            PaymentDTO payment = null;
             if (id != null) {
                 payment = paymentDAO.load(id);
             }
@@ -76,16 +77,14 @@ public class PaymentController extends HttpServlet {
             RequestDispatcher rd = request.getRequestDispatcher("Paymentdetails.jsp");
             rd.forward(request, response);
 
-        } 
-        
-        else if (action.equals("edit")) {
+        } else if (action.equals("edit")) {
             Integer id = null;
             try {
                 id = Integer.parseInt(request.getParameter("id"));
             } catch (NumberFormatException e) {
                 log("Parameter id has wrong format");
             }
-             PaymentDTO student = null;
+            PaymentDTO student = null;
             if (id != null) {
                 student = paymentDAO.load(id);
             }
@@ -94,17 +93,14 @@ public class PaymentController extends HttpServlet {
             RequestDispatcher rd = request.getRequestDispatcher("Paymentedit.jsp");
             rd.forward(request, response);
 
-        } 
-        
-        else if (action.equals("create")) {
+        } else if (action.equals("create")) {
             PaymentDTO student = new PaymentDTO();
             request.setAttribute("object", student);
             request.setAttribute("nextaction", "insert");
             RequestDispatcher rd = request.getRequestDispatcher("Paymentedit.jsp");
             rd.forward(request, response);
 
-        }
-        else if (action.equals("update")) {
+        } else if (action.equals("update")) {
             Integer id = null;
             try {
                 id = Integer.parseInt(request.getParameter("id"));
@@ -119,23 +115,26 @@ public class PaymentController extends HttpServlet {
             } catch (NumberFormatException e) {
                 log("Parameter amount has wrong format");
             }
-
-             PaymentDTO payment = null;
+            if (id == null || method.isEmpty() || date.isEmpty() || amount == 0) {
+                request.setAttribute("error", "Missing one or more field so cannot save");
+                RequestDispatcher rd = request.getRequestDispatcher("Paymentdetails.jsp");
+                rd.forward(request, response);
+            }
+            PaymentDTO payment = null;
             if (id != null) {
-                payment= paymentDAO.load(id);
+                payment = paymentDAO.load(id);
             }
 
             payment.setPaymentdate(date);
             payment.setPaymentmethod(method);
             payment.setAmount(amount);
             paymentDAO.update(payment);
-            request.setAttribute("object",payment);
+            request.setAttribute("object", payment);
             request.setAttribute("nextaction", "update");
             RequestDispatcher rd = request.getRequestDispatcher("Paymentdetails.jsp");
             rd.forward(request, response);
 
-        }
-        else if (action.equals("insert")) {
+        } else if (action.equals("insert")) {
             Integer id = null;
             try {
                 id = Integer.parseInt(request.getParameter("id"));
@@ -151,22 +150,25 @@ public class PaymentController extends HttpServlet {
             } catch (NumberFormatException e) {
                 log("Parameter amount has wrong format");
             }
+             if (id == null || method.isEmpty() || date.isEmpty() || amount == 0) {
+                request.setAttribute("error", "Missing one or more field so cannot save");
+                RequestDispatcher rd = request.getRequestDispatcher("Paymentdetails.jsp");
+                rd.forward(request, response);
+            }
+            PaymentDTO payment = new PaymentDTO();
 
-           PaymentDTO payment = new PaymentDTO();
-           
             payment.setPaymentid(id);
             payment.setPaymentdate(date);
             payment.setPaymentmethod(method);
             payment.setAmount(amount);
             paymentDAO.update(payment);
 
-            paymentDAO.insert( payment);
-            request.setAttribute("object",  payment);
+            paymentDAO.insert(payment);
+            request.setAttribute("object", payment);
             RequestDispatcher rd = request.getRequestDispatcher("Paymentdetails.jsp");
             rd.forward(request, response);
 
-        }   
-         else if (action.equals("delete")) {
+        } else if (action.equals("delete")) {
             Integer id = null;
             try {
                 id = Integer.parseInt(request.getParameter("id"));
@@ -190,7 +192,7 @@ public class PaymentController extends HttpServlet {
             request.getRequestDispatcher("/PaymentList.jsp").forward(request, response);
         }
     }
-    
+
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.

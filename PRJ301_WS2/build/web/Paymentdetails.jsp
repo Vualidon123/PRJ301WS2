@@ -27,7 +27,10 @@
             <input type=submit value="Edit">
         </form>
 
-
+ <%String error = (String) request.getAttribute("error");%>
+        <%if (error != null) {%>
+        <h3> <%=error%> </h3>
+        <%}%>
 
 
     </body>
