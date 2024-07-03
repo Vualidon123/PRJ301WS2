@@ -15,7 +15,8 @@
     <body>
          <%@ include file="/menu.jsp" %>
         <form action='' method=GET> 
-            <input name=keyword type=text value="<%=request.getParameter("keyword") != null ? request.getParameter("keyword") : ""%>">
+           method <input name=mkeyword type=text value="<%=request.getParameter("mkeyword") != null ? request.getParameter("mkeyword") : ""%>">
+           date <input name=dkeyword type=text value="<%=request.getParameter("dkeyword") != null ? request.getParameter("dkeyword") : ""%>">
             <input type=submit value=Search >
         </form>
               <table>

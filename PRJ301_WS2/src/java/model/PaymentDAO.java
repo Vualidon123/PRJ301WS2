@@ -19,29 +19,29 @@ import utils.DBUtils;
  * @author PC MSI
  */
 public class PaymentDAO {
- public List<PaymentDTO> list(String keyword, String sortCol) {
+ public List<PaymentDTO> list(String keyword, String sortCol,int mode) {
 
         List<PaymentDTO> list = new ArrayList<PaymentDTO>();
 
         try {
 
             Connection con = DBUtils.getConnection();
-            String sql = " SELECT PaymentID, PaymentDate, Amount, PaymentMethod FROM Payments ";
-
-            if (keyword != null && !keyword.isEmpty()) {
-                sql += " WHERE PaymentMethod like ? OR PaymentDate like ? ";
-            }
-
+            String sql = " SELECT PaymentID, PaymentDate, Amount, PaymentMethod FROM Payments  ";
+            if ( mode == 1) {
+            sql += " WHERE PaymentMethod like ? ";
+            }else if ( mode == 2){         
+            sql += " WHERE  PaymentDate like ? ";
+            }else
             if (sortCol != null && !sortCol.isEmpty()) {
                 sql += " ORDER BY " + sortCol + " ASC ";
             }
 
             PreparedStatement stmt = con.prepareStatement(sql);
 
-            if (keyword != null && !keyword.isEmpty()) {
+          
                 stmt.setString(1, "%" + keyword + "%");
-                stmt.setString(2, "%" + keyword + "%");
-            }
+
+            
 
             ResultSet rs = stmt.executeQuery();
 

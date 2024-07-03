@@ -40,10 +40,8 @@ public class PaymentController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String action = request.getParameter("action");
-        String keyword = request.getParameter("keyword");
-        if (keyword == null) {
-            keyword = "";
-        }
+        String mkeyword = request.getParameter("mkeyword");
+        String dkeyword = request.getParameter("dkeyword");
         String sortCol = request.getParameter("colSort");
 
         PaymentDAO paymentDAO = new PaymentDAO();
@@ -51,11 +49,21 @@ public class PaymentController extends HttpServlet {
         if (session != null && session.getAttribute("usersession") == null) {
             response.sendRedirect("login.jsp");
         }
+        List<PaymentDTO> list = null;
+        PaymentDAO dao = new PaymentDAO();
 
         if (action == null || action.equals("list")) {
-
-            PaymentDAO dao = new PaymentDAO();
-            List<PaymentDTO> list = dao.list(keyword, sortCol);
+            if (mkeyword == null && dkeyword == null) {
+                mkeyword = "";
+                list = dao.list(mkeyword, sortCol,1 );
+            } else if (mkeyword.isEmpty() && !dkeyword.isEmpty()) {
+                list = dao.list(dkeyword, sortCol, 2);
+            } else if (!mkeyword.isEmpty() && dkeyword.isEmpty()) {
+                list = dao.list(mkeyword, sortCol, 1);
+            } else {
+                mkeyword = "";
+                list = dao.list(mkeyword, sortCol, 1);
+            }
             request.setAttribute("paymentlist", list);
             request.getRequestDispatcher("/PaymentList.jsp").forward(request, response);
 
@@ -102,6 +110,7 @@ public class PaymentController extends HttpServlet {
 
         } else if (action.equals("update")) {
             Integer id = null;
+            PaymentDTO payment = null;
             try {
                 id = Integer.parseInt(request.getParameter("id"));
             } catch (NumberFormatException e) {
@@ -116,11 +125,13 @@ public class PaymentController extends HttpServlet {
                 log("Parameter amount has wrong format");
             }
             if (id == null || method.isEmpty() || date.isEmpty() || amount == 0) {
+                payment = paymentDAO.load(id);
+                request.setAttribute("object", payment);
                 request.setAttribute("error", "Missing one or more field so cannot save");
                 RequestDispatcher rd = request.getRequestDispatcher("Paymentdetails.jsp");
                 rd.forward(request, response);
             }
-            PaymentDTO payment = null;
+
             if (id != null) {
                 payment = paymentDAO.load(id);
             }
@@ -150,7 +161,7 @@ public class PaymentController extends HttpServlet {
             } catch (NumberFormatException e) {
                 log("Parameter amount has wrong format");
             }
-             if (id == null || method.isEmpty() || date.isEmpty() || amount == 0) {
+            if (id == null || method.isEmpty() || date.isEmpty() || amount == 0) {
                 request.setAttribute("error", "Missing one or more field so cannot save");
                 RequestDispatcher rd = request.getRequestDispatcher("Paymentdetails.jsp");
                 rd.forward(request, response);
@@ -177,20 +188,10 @@ public class PaymentController extends HttpServlet {
             }
             PaymentDTO student = null;
             paymentDAO.delete(id);
-            List<PaymentDTO> list = paymentDAO.list(keyword, sortCol);
-            request.setAttribute("paymentlist", list);
-            request.getRequestDispatcher("/PaymentList.jsp").forward(request, response);
+            response.sendRedirect("./PaymentController");
 
         }
 
-        if (action == null || action.equals("") || action.equals("list")) {
-
-            PaymentDAO dao = new PaymentDAO();
-            List<PaymentDTO> list = dao.list(keyword, sortCol);
-            request.setAttribute("paymentlist", list);
-
-            request.getRequestDispatcher("/PaymentList.jsp").forward(request, response);
-        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
